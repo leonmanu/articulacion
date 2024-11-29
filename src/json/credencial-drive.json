@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "proyecto-articulacion-2024",
+  "private_key_id": "a247b2e50138b93e3411bb32258ca0c1a8bf0496",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDboi/Hi/ovALfb\nVe9jFMm2Ia2JbSz07p/p65XwZqTxzNcePa5teDFB6F5uyJQ2Rwjcs7mXuxuwtpYk\nHPNoPbpEt01EFcxA3JbL/VKQ2Z67cczccngmV/UTWzlOaBLXp+/xmUX4aZ65Bv6s\n3a6WSt54nvdbzxY7t/JYrmjapsqmCrnR0MHOjTa/1Fu1iWv2dDEtFjwZei3r560q\nAXw1s+nCDqBTqLSmOmVp4+vpIl+0wIsIbGHYBBe4XwTcvLQEigCVv8MQO9dTlAbx\nnVDSuW03Gz7KvjVcbfU/V3TV8kpb6+lsr2srjaJO1gHEJZF8HJ9wfNfLriIMnQN+\nureu7EjpAgMBAAECggEAE6MLGZDC1BwA1Dv5NMchh8a4EM7xk46YPp5hIAbVXYce\nfqYuJ7x0zvs7IjWNxtKQEMeC4vWIMsMIZn8uJhZKxqUK4/j885mlY+So0qmaXxD8\nK4OSiX8YutvPolp8wMpTkirNjjnHRqzA7Wy+lNJp1KgF3rADwWAfa11go5gBC1pE\npgBXJeYp3IG0y4yrOminTHZJ5hEJE4O2upyXGAPXXowtqFv0JXW1AjeQctHihBoK\nWKMOVr9LsZNuQT2xRr35LxdH3fnzsxqoRSw4m/fT/ayPLLtfdMnjGA1B+bNsHeaM\nwh5fFjz/JNhi1aOcBHtC9+m1zISW6FK3RcSAmfdGwQKBgQD90XN/pGCnfakhTYKj\nxPGoc4NGWC8siz51r349OETFuZ09Z2DMd+JvahRDh2HtiERcHYI+kAd5jPj/xT4R\nDRTksAQT3QU3H/rFrWshy8ffhDoo7VEC9nmKMTQ5tCUBpVHfdquzVdnvAdL/lLd1\n4gd61yJBJzoTQKZlvoNbUiw7sQKBgQDdhYJdyby5bvhAOk6Hv2XBXRQ+dgpRBZO7\nidV2DmkSq9GPdog9ZtGo+kJmzwFVGU2GYHG63w9dAwutSi1USMZlnvqqOuOKxPBV\nhiVkYsg5jV6RpaeO4eM1pa6UBUbnAklyPbQmbjgbdsy3V/oEcT4J6zh6tvX49Keq\nKNG+gz8GuQKBgQCe1tW12nOWPaB7M9t+i4BDz84mVodnE9jJo0KYIz9+kXMiezBr\npNayrKrzu6SAFtfY4aqhZlcXLS6iOZhm6U3a84AJwjZCUiQIU0eJBdMWQNR4ylL5\nTK+w2Kv7NI44InJDKyu2dhKFbRnTUgkhn4rYyAsqxNamN74qS/g+TQVbcQKBgDP2\nVl9DrDZfNnJyeutS1T6nY9FHBSJ+SWoradwYg0My9KRPbKPik3mswpi1JB3fIpVL\n2EG6gzMRPNL4XGux6n/569i0mZ16ltmo7up+VXNSmwVVM1nL2O1DoRDtr/UOT0Yx\n/Skqn5SpqFm1lFsoaSIQgB4g/s/YK+A5VQH4bXdZAoGAWr2DAw6DKYrP4260wWGH\nwp5Z74/zYsS7V6PQjvBIUqqSuFlpH8oi9Y6Gs18rytHbAaCWF3D2yUbVfTooGDR0\n/FE8ORcKYuQsiOfla4DfnSDhlzzjX9/xLextYeQMy+LyAF0KC+Jnh6qJjzErEELt\ny66XEy1mv1mDnhpVxJvn5/M=\n-----END PRIVATE KEY-----\n",
+  "client_email": "crud-sheed@proyecto-articulacion-2024.iam.gserviceaccount.com",
+  "client_id": "111053065432169200216",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/crud-sheed%40proyecto-articulacion-2024.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
