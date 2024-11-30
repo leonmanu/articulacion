@@ -27,7 +27,6 @@ const getColumna = async (clave) => {
             console.warn("No se encontraron registros.")
             return []
         }
-        console.log("registros: ", registros)
         return registros
 
     } catch (error) {
