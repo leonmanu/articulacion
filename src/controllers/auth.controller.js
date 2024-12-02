@@ -5,10 +5,9 @@ const oauth2 = google.oauth2('v2')
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
-    [
-        'https://articulacion.onrender.com/oauth2callback',
-        'http://localhost:5000/oauth2callback'
-    ]
+    process.env.NODE_ENV === 'production'
+        ? 'https://articulacion.onrender.com/oauth2callback'
+        : 'http://localhost:5000/oauth2callback'
 );
 
 /**
