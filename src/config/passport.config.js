@@ -20,8 +20,9 @@ passport.use(
             callbackURL: process.env.NODE_ENV === 'production'
                 ? "https://articulacion.onrender.com/oauth2callback"
                 : "http://localhost:5000/oauth2callback",
-            passReqToCallback: true
-            
+            passReqToCallback: true,
+            scope: ['email', 'profile'],
+            prompt: 'select_account', // Para forzar la selección de cuenta
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log('Perfil de usuario:', profile);
