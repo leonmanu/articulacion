@@ -17,11 +17,10 @@ passport.use(
         {
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
-            callbackURL: CALLBACK_URL,
-            passReqToCallback: true,
-            prompt: 'select_account',
-            scope: ['email', 'profile']
-            // Agregar el parámetro prompt=select_account
+            callbackURL: process.env.NODE_ENV === 'production'
+                ? "https://articulacion.onrender.com/oauth2callback"
+                : "http://localhost:5000/oauth2callback",
+            passReqToCallback: true
             
         },
         async (accessToken, refreshToken, profile, done) => {
