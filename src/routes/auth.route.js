@@ -4,13 +4,7 @@ const passport = require('../config/passport.config');
 const router = express.Router();
 
 // Ruta para iniciar sesión con Google
-router.get(
-    '/auth/google',
-    passport.authenticate('google', {
-        scope: ['profile', 'email'],
-        prompt: 'select_account', // Forzar selección de cuenta
-    })
-)
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // Ruta de callback de Google
 router.get(
