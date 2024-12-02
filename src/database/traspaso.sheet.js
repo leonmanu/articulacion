@@ -42,4 +42,46 @@ async function post(data) {
     }
 }
 
-module.exports = { get, post };
+async function postArray(data) {
+
+    const nerrores = 0
+
+    try {
+        const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth);
+        await documento.loadInfo();
+        const sheet = documento.sheetsByTitle['traspaso'];
+
+        for (const registro of data) {
+            try {
+                if (!registro || Object.keys(registro).length === 0) {
+                    throw new Error("Registro vacío o inválido.");
+                }
+
+                // Guardar la fila en la hoja
+                await sheet.addRow(registro);
+            } catch (error) {
+                console.error("Error al procesar registro:")
+                return nerrores += 1
+            }
+        }
+    } catch (error) {
+        console.error("Error crítico al procesar registros:", error.message);
+        return {
+            value: false,
+            message: error.message
+        }
+    }
+
+    // Retornar siempre un objeto con resultados y errores
+    return {
+        value: true,
+        message: "listo pero con " + nerrores + "errores."
+    }
+}
+
+
+
+
+
+
+module.exports = { get, post, postArray };

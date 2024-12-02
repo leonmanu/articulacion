@@ -9,22 +9,24 @@ const get =  async (req, res) => {
     res.render("pages/traspaso/traspasoList", {registros})
 }
 
-const post =  async (req, res) => {
-    console.log("entró al controller de traspaso")
+const postArray = async (req, res) => {
+    console.log("Entró al controller de traspaso");
 
     try {
-        const arrayJson = req.body.datosModificados
-        const resultado = await traspasoService.post(arrayJson)
-        
-        res.status(201).json({ message: 'Registro agregado correctamente', data: resultado });
-    }
-    catch (error) {
-        console.log("error")
-        res.status(500).json({ error: 'Error al agregar el registro' });
+        const arrayJson = req.body.datosModificados;
+        const emailUsuario = req.session.user.email
+        await traspasoService.postArray(arrayJson, emailUsuario);
+
+        // Respuesta exitosa con un mensaje
+        res.status(201).send("Registro agregado correctamente");
+    } catch (error) {
+        console.error("Error en el controller POST:", error.message);
+        res.status(500).send("Error al agregar el registro.");
     }
 }
 
+
 module.exports = {
     get,
-    post
+    postArray
 }

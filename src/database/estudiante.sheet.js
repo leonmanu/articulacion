@@ -15,7 +15,7 @@ async function get() {
         const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth)
         
         await documento.loadInfo()
-        const sheet = documento.sheetsById[0] // Seleccionamos la primera hoja
+        const sheet = documento.sheetsByTitle['estudiante'];
         const rows = await sheet.getRows() // Obtenemos todas las filas
         
         return rows

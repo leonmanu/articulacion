@@ -17,18 +17,10 @@ const serviceAccountAuth = new JWT({
 async function get() {
     try {
         const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth);
-
         await documento.loadInfo();
         const sheet = documento.sheetsByTitle['usuario'];
-        const rows = await sheet.getRows();
-
-        const registros = rows.map(row => {
-            const obj = {};
-            sheet.headerValues.forEach(header => {
-                obj[header] = row[header] || null;
-            });
-            return obj;
-        });
+        
+        const registros = await sheet.getRows();
 
         return registros;
     } catch (error) {

@@ -10,11 +10,15 @@
     <!-- Navber secundario -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <div class="navbar-brand" href="#">Estudiantes</div>
-            <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
-            <button type="button" class="btn btn-success d-none" id="btn-guardar">Guardar</button>
+            <div class="navbar-brand">Estudiantes</div>
+            <div class="ml-auto">
+                <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
+                <button type="button" class="btn btn-warning d-none" id="btn-cancelar">Cancelar</button>
+                <button type="button" class="btn btn-success d-none" id="btn-guardar">Guardar</button>
+            </div>
         </div>
     </nav>
+    
 
     <!-- Contenido Principal -->
     <div class="container mt-4">
@@ -23,13 +27,11 @@
                 <tr>
                     <th class="d-none" > Change </th>
                     <th class="d-none" >RN</th>
-                    <th>ID</th>
-                    <th>Escuela</th>
-                    <th>Curso</th>
-                    <th>Fecha Inscripción</th>
-                    <th>Estado Inscripción</th>
+                    <th class="d-none">ID</th>
+                    <th class="d-none">Escuela</th>
                     <th>Estudiante</th>
                     <th>Documento</th>
+                    <th>Curso</th>
                     <th>Escuela Destino</th>
                 </tr>
             </thead>
@@ -38,15 +40,13 @@
                     <tr>
                         <td class="change d-none">false</td>
                         <td class="text-center d-none"><%= estudiante.rowNumber %></td>
-                        <td class="text-center"><%= estudiante.id %></td>
-                        <td class="text-center"><%= estudiante.claveEscuela %></td>
+                        <td class="text-center d-none"><%= estudiante.id %></td>
+                        <td class="text-center d-none"><%= estudiante.claveEscuela %></td>
+                        <td class=""><%= estudiante.estudiante || 'Sin nombre' %></td>
+                        <td class="text-center"><%= estudiante.documento || 'Sin documento' %></td>
                         <td class="text-center"><%= estudiante.claveCurso %></td>
-                        <td class="text-center"><%= estudiante['Fecha inscripción'] %></td>
-                        <td class="text-center"><%= estudiante['Estado inscripción'] %></td>
-                        <td class="text-center estudiante"><%= estudiante.estudiante %></td>
-                        <td class="text-center"><%= estudiante.documento %></td>
                         <td>
-                            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar..." disabled>
+                            <input name="escuelaDestino" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar..." disabled>
                             <datalist id="datalistOptions">
                                 <% claveEscuelas.forEach(escuela => { %>
                                     <option value="<%= escuela %>"><%= escuela %></option>

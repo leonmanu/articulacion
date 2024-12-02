@@ -9,23 +9,55 @@ const get =  async (req, res) => {
 }
 
 const usuarioAnalisis = async (req, res) => {
-   //console.log("usuairo.controller / siEsisteUsuario / req.session.user.hd: " + req.session.user.email)
-    const email = req.session.user.email
-    const hd = req.session.user.hd
+    const user = req.session.user;
+    const email = user.email;
+    const nameJson = user.name.split(' ');
+    const tipo = nameJson[0]; // Identificamos el tipo por el primer nombre
 
-    const resultado = await usuarioService.getSiExiste(email)
-    console.log("resultado; ", resultado)
-    if(resultado){
-        res.redirect("/docente/cargo")
-    } else {
-        res.redirect("/usuario/alta")
+    try {
+        const resultado = await usuarioService.getSiExiste(email, tipo);
+
+        if (!resultado.value) { // Usuario no existe
+            if (tipo === 'Escuela') {
+                return res.redirect("/usuario/alta")
+            } else {
+                return res.redirect("/usuario/altaAdmin")
+            }
+        }
+
+        if (!resultado.admin) {
+            if (tipo === 'Escuela') {
+                return res.redirect("/estudiante/acciones")
+            } else {
+                req.session.message = resultado.message; // Guardar el mensaje en la sesión para mostrarlo
+                return res.redirect("/"); // Redirige al inicio con el mensaje
+            }
+        }
+        else{
+            return res.redirect("/estudiante") // Usuario existe y es admin
+        }
+
+    } catch (error) {
+        console.error("Error al analizar el usuario:", error.message);
+        res.status(500).send("Ocurrió un error al procesar la solicitud.");
     }
-}
+};
+
 
 const post = (req, res) => {
+    const user = req.session.user;
+    const email = user.email;
+    const nameJson = user.name.split(' ');
+    const tipo = nameJson[0]; // Identificamos el tipo por el primer nombre
+
     const obj = req.body
     const resultado = usuarioService.post(obj)
-    res.redirect("/")
+    if (tipo === 'Escuela') {
+        return res.redirect("/estudiante/acciones")
+    } else {
+        req.session.message = "Usuario admin en espera de aprobación."
+        return res.redirect("/")
+    }
 }
 
 const formAlta =  async (req, res) => {
@@ -34,9 +66,30 @@ const formAlta =  async (req, res) => {
     res.render('pages/usuario/formAlta', {user, claveEscuelas})
 }
 
+const formAltaAdmin =  async (req, res) => {
+    const user = req.session.user
+    res.render('pages/usuario/formAltaAdmin', {user})
+}
+
+
+const logout =  async (req, res) => {
+    // Destruir la sesión del usuario
+    req.logout((err) => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.status(500).send('Error al cerrar sesión');
+        }
+        req.session.destroy(() => {
+            res.redirect('/'); // Redirigir a la página de inicio o login
+        });
+    });
+}
+
 module.exports = {
     get,
     post,
     usuarioAnalisis,
     formAlta,
+    formAltaAdmin,
+    logout
 }

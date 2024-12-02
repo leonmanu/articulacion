@@ -1,80 +1,94 @@
 $(window).on("load", function () {
-    // Manejar el cambio en cualquier input dentro de la tabla
     $("table > tbody > tr input").change(function (event) {
         event.preventDefault();
-
-        // Obtener la fila actual
         var tbl_row = $(this).closest('tr');
-
-        // Resaltar fila modificada
-        tbl_row.addClass('fst-italic');
-        tbl_row.find(".change").html('true'); // Marcar como modificada
-        tbl_row.find(".estudiante").addClass('text-success'); // Resaltar estudiante
-
-        // Activar botón de guardar
-        $('#btn-guardar').prop('disabled', false).addClass('btn-outline-success');
+        tbl_row.addClass('fst-italic fst-boldt');
+        tbl_row.find(".change").html('true');
+        actualizarEstadoBotonGuardar();
     });
 
-    // Al presionar el botón editar
     $('#btn-editar').click(function (event) {
         event.preventDefault();
-
         $('#btn-editar').addClass('d-none');
+        $('#btn-cancelar').removeClass('d-none');
         $('#btn-guardar').removeClass('d-none');
         $('.form-control').removeAttr('disabled');
     });
 
-    // Al presionar el botón guardar
+    $('#btn-cancelar').click(function (event) {
+        event.preventDefault();
+        $('#btn-editar').removeClass('d-none');
+        $('#btn-cancelar').addClass('d-none');
+        $('#btn-guardar').addClass('d-none');
+        $('.form-control').attr('disabled', true);
+    });
+
     $('#btn-guardar').click(function (event) {
         event.preventDefault();
-
-        // Variable para acumular datos de filas modificadas
         let datosModificados = [];
-
-        // Recorrer filas modificadas
         $("table > tbody > tr").each(function () {
             var tbl_row = $(this);
-
-            // Verificar si la fila fue modificada
             if (tbl_row.find(".change").html() === 'true') {
                 let fila = {
-                    rn: tbl_row.find("td:nth-child(2)").text().trim(), // Valor oculto RN
-                    id: tbl_row.find("td:nth-child(3)").text().trim(), // ID
-                    escuelaOrigen: tbl_row.find("td:nth-child(4)").text().trim(), // Clave Escuela
-                    curso: tbl_row.find("td:nth-child(5)").text().trim(), // Clave Curso
-                    fechaInscripcion: tbl_row.find("td:nth-child(6)").text().trim(), // Fecha Inscripción
-                    estadoInscripcion: tbl_row.find("td:nth-child(7)").text().trim(), // Estado Inscripción
-                    estudiante: tbl_row.find("td:nth-child(8)").text().trim(), // Nombre Estudiante
-                    dni: tbl_row.find("td:nth-child(9)").text().trim(), // Documento
-                    escuela: tbl_row.find("td:nth-child(10) input").val() // Valor del input asociado al datalist
+                    escuelaOrigen: tbl_row.find("td:nth-child(4)").text().trim(),
+                    documento: tbl_row.find("td:nth-child(6)").text().trim(),
+                    escuelaDestino: tbl_row.find("td:nth-child(8) input").val().trim() || ""
                 };
-
                 datosModificados.push(fila);
             }
-        })
+        });
+
+        if (datosModificados.length === 0) {
+            alert("No hay datos modificados para guardar.");
+            return;
+        }
+
         $.ajax({
-            url: '/traspaso/post',
+            url: '/traspaso/postArray',
             contentType: 'application/json',
             method: 'POST',
-            data: JSON.stringify({ datosModificados }), // Asegurarte de que los datos son un objeto JSON
-            dataType: 'json', // Esperamos una respuesta en JSON
+            data: JSON.stringify({ datosModificados }),
+            dataType: 'text',
+            beforeSend: showSpinner,
             success: function (response) {
                 console.log("Respuesta del servidor:", response);
-                alert(response.message); // Mensaje enviado desde el backend
-                // Aquí reinicia el estado de las filas si es necesario
+                //alert(response);
+                $("table > tbody > tr").each(function () {
+                    var tbl_row = $(this);
+                    if (tbl_row.find(".change").html() === 'true') {
+                        tbl_row.removeClass('fst-italic');
+                        tbl_row.find(".change").html('false');
+                        tbl_row.find(".estudiante").removeClass('text-success');
+                    }
+                })
+                $('.form-control').attr('disabled', true)
             },
             error: function (xhr, status, error) {
                 console.error("Error al guardar:", error);
                 alert("Error al guardar los datos: " + error);
+            },
+            complete: hideSpinner
+        });
+    });
+
+    function actualizarEstadoBotonGuardar() {
+        let hayModificaciones = false;
+        $("table > tbody > tr").each(function () {
+            if ($(this).find(".change").html() === 'true') {
+                hayModificaciones = true;
+                return false;
             }
         });
-        
-        
 
-        // Mostrar los datos modificados como JSON en un alert
-        //alert(JSON.stringify(datosModificados, null, 4)); // Formateado para lectura
+        $('#btn-guardar').prop('disabled', !hayModificaciones)
+                         .toggleClass(' ', hayModificaciones);
+    }
 
-        // Opcional: Resetear el estado de las filas
-        
-    });
+    function showSpinner() {
+        $('#loading-spinner').removeClass('d-none');
+    }
+
+    function hideSpinner() {
+        $('#loading-spinner').addClass('d-none');
+    }
 });

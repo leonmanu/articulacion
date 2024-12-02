@@ -19,30 +19,44 @@ const get = async () => {
     }
 }
 
-const post = async (arrayJson) => {
-    console.log("traspaso.service -> post: ", arrayJson.length)
+const postArray = async (arrayJson, emailUsuario) => {
+    console.log("Servicio POST llamado con datos:", arrayJson);
+
     if (!arrayJson || !Array.isArray(arrayJson) || arrayJson.length === 0) {
-        return res.status(400).json({ error: 'No hay datos válidos para procesar.' });
+        throw new Error('No hay datos válidos para procesar.');
     }
 
-    try {
-        const resultados = [];
-        
-        for (const registro of arrayJson) {
-            console.log("Procesando registro:", registro);
+    const fechaActual = new Date().toISOString();
 
-            // Aquí debería ser el formato correcto de fila, cada 'registro' es una fila
-            const resultado = await traspasoSheet.post(registro); // Llamamos a la función que maneja el servicio
-            resultados.push(resultado); // Acumulamos el resultado de cada inserción
+    // Modificar cada objeto en el array agregando las propiedades 'fecha' y 'usuario'
+    const arrayModificado = arrayJson.map(registro => {
+        // Aquí estamos agregando las propiedades 'fecha' y 'usuario' a cada objeto
+        return {
+            ...registro, // Copiamos las propiedades existentes del objeto
+            fecha: fechaActual,  // Agregamos la propiedad 'fecha' con la fecha actual
+            usuario: emailUsuario, // Agregamos la propiedad 'usuario' con el correo del usuario
+            estado: 1
+        }
+    })
+
+    try {
+        const resultado = await traspasoSheet.postArray(arrayModificado);
+
+        if (!resultado.value) {
+            console.warn("Errores detectados:", errores);
+            throw new Error(resultado.message);
         }
 
-        return resultados
+        console.log("Todos los registros se guardaron correctamente.");
     } catch (error) {
-        console.error("Error al procesar registros:", error);
-        res.status(500).json({ error: 'Error al guardar los registros' });
+        console.error("Error en el servicio POST:", error.message);
+        throw error;
     }
 }
 
+
+
+
 module.exports = {
-    get, post
+    get, postArray
 }

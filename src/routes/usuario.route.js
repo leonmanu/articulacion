@@ -5,13 +5,17 @@ const {
     get,
     usuarioAnalisis,
     formAlta,
-    post
+    formAltaAdmin,
+    post,
+    logout
 } = require('../controllers/usuario.controller')
 
 router
     .get('/', get)
     .get('/usuarioAnalisis', usuarioAnalisis)
     .get('/alta', formAlta)
+    .get('/altaAdmin', formAltaAdmin)
+    .get('/logout', logout)
     .post('/alta', post)
 
 module.exports = router
