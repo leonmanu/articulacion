@@ -13,9 +13,11 @@ const usuarioAnalisis = async (req, res) => {
     const email = user.email;
     const nameJson = user.name.split(' ');
     const tipo = nameJson[0]; // Identificamos el tipo por el primer nombre
+    const nivel = nameJson[1]
 
     try {
         const resultado = await usuarioService.getSiExiste(email, tipo);
+        //console.log("resultado: " + resultado.usuario.clave)
 
         if (!resultado.value) { // Usuario no existe
             if (tipo === 'Escuela') {
@@ -27,7 +29,12 @@ const usuarioAnalisis = async (req, res) => {
 
         if (!resultado.admin) {
             if (tipo === 'Escuela') {
-                return res.redirect("/estudiante/acciones")
+                if(nivel === 'Primaria'){
+                    console.log("/estudiante/salientes/"+resultado.usuario.clave)
+                    return res.redirect("/estudiante/salientes/"+resultado.usuario.clave)
+                } else {
+                    return res.redirect("/estudiante/entrantes")
+                }
             } else {
                 req.session.message = resultado.message; // Guardar el mensaje en la sesión para mostrarlo
                 return res.redirect("/"); // Redirige al inicio con el mensaje
@@ -49,11 +56,17 @@ const post = (req, res) => {
     const email = user.email;
     const nameJson = user.name.split(' ');
     const tipo = nameJson[0]; // Identificamos el tipo por el primer nombre
+    const nivel = nameJson[1]
 
     const obj = req.body
     const resultado = usuarioService.post(obj)
     if (tipo === 'Escuela') {
-        return res.redirect("/estudiante/acciones")
+        if(nivel === 'Secundaria'){
+            return res.redirect("/estudiante/entrantes")
+        } else {
+            console.log("/estudiante/salientes/"+obj.clave)
+            return res.redirect("/estudiante/salientes/"+obj.clave)
+        }
     } else {
         req.session.message = "Usuario admin en espera de aprobación."
         return res.redirect("/")

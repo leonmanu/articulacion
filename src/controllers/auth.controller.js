@@ -26,7 +26,7 @@ const oauth2Callback = async (req, res) => {
         // Obtener información del perfil del usuario
         const userInfoResponse = await oauth2.userinfo.get({ auth: oauth2Client });
         const userInfo = userInfoResponse.data; // Datos del usuario
-        //console.log("userInfo: ", userInfo)
+        console.log("userInfo: ", userInfo)
         if (userInfo.hd === 'abc.gob.ar') {
             // Usuario autorizado
             req.session.user = userInfo;

@@ -19,6 +19,29 @@ const get = async () => {
     }
 }
 
+const getPorEscuelaClave = async (clave) => {
+    //console.log("getPorEscuelaClave / clave: ", clave)
+    try {
+        const registros = await get()
+
+        if (!registros.length) {
+            console.warn("No se encontraron registros.")
+            return []
+        }
+
+        const filtrados = await registros.filter(row => row.claveEscuela == clave)
+        console.log("estudiante.service -> filtrados: ", filtrados)
+        
+        //const registrosJson = utilidadesService.convertToJson(filtrados)
+        return filtrados
+
+    } catch (error) {
+        console.error("Error al procesar los datos:", error.message)
+        return []
+    }
+}
+
 module.exports = {
     get,
+    getPorEscuelaClave
 }

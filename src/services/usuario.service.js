@@ -71,7 +71,8 @@ const getSiExiste = async (email, tipo) => {
         return {
             value: true,
             admin: false,
-            message: "Usuario tipo Escuela aprobado."
+            message: "Usuario tipo Escuela aprobado.",
+            usuario: usuario
         };
     } catch (error) {
         console.error("Error al verificar usuario:", error.message);
