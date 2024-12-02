@@ -12,22 +12,18 @@ const CLIENT_SECRET = credentials.web.client_secret;
 const CALLBACK_URL = credentials.web.redirect_uris[0];
 
 // Configura la estrategia de Google
-passport.use(
-    new GoogleStrategy(
-        {
-            clientID: "158320560302-uijgnhspve6ntibrgkcn5gg9juuuvvmk.apps.googleusercontent.com",
-            clientSecret: "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",
-            callbackURL: process.env.NODE_ENV === 'production'
+new GoogleStrategy(
+    {
+        clientID: "TU_CLIENT_ID",
+        clientSecret: "TU_CLIENT_SECRET",
+        callbackURL: process.env.NODE_ENV === 'production'
             ? "https://articulacion.onrender.com/auth/google/callback"
             : "http://localhost:3000/auth/google/callback",
-            passReqToCallback : true
-        },
-        async (accessToken, refreshToken, profile, done) => {
-            console.log('Perfil de usuario:', profile);
-            // Aquí puedes verificar si el usuario ya existe en tu base de datos
-            done(null, profile); // Puedes reemplazar profile con un objeto de usuario
-        }
-    )
+    },
+    async (accessToken, refreshToken, profile, done) => {
+        console.log('Perfil de usuario:', profile);
+        done(null, profile);
+    }
 );
 
 // Serialización de usuario
