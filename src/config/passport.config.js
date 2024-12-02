@@ -18,6 +18,11 @@ passport.use(
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
             callbackURL: CALLBACK_URL,
+            passReqToCallback: true,
+            prompt: 'select_account',
+            scope: ['email', 'profile']
+            // Agregar el parámetro prompt=select_account
+            
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log('Perfil de usuario:', profile);
