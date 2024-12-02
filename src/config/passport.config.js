@@ -15,21 +15,15 @@ const CALLBACK_URL = credentials.web.redirect_uris[0];
 passport.use(
     new GoogleStrategy(
         {
-            clientID: "TU_CLIENT_ID",
-            clientSecret: "TU_CLIENT_SECRET",
-            callbackURL: process.env.NODE_ENV === 'production'
-                ? "https://articulacion.onrender.com/oauth2callback"
-                : "http://localhost:5000/oauth2callback",
-            passReqToCallback: true
+            clientID: "158320560302-uijgnhspve6ntibrgkcn5gg9juuuvvmk.apps.googleusercontent.com",
+            clientSecret: "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",
+            callbackURL:  "https://articulacion.onrender.com/oauth2callback",
+            passReqToCallback : true
         },
         async (accessToken, refreshToken, profile, done) => {
-            console.log('AccessToken:', accessToken);
-            console.log('RefreshToken:', refreshToken);
-            console.log('Perfil completo:', profile);
-            if (!profile) {
-                return done(new Error('Perfil no encontrado'));
-            }
-            done(null, profile);
+            console.log('Perfil de usuario:', profile);
+            // Aquí puedes verificar si el usuario ya existe en tu base de datos
+            done(null, profile); // Puedes reemplazar profile con un objeto de usuario
         }
     )
 );
