@@ -17,10 +17,10 @@ app
     .use(express.urlencoded({ extended: true }))
     .use(
         session({
-            secret: 'tu_secreto', // Cambia esto por algo seguro
+            secret: process.env.CLIENT_SECRET, // Cambia esto por algo seguro
             resave: false,
             saveUninitialized: false,
-        })
+        }) 
     )
     .use(passport.initialize())
     .use(passport.session())
