@@ -17,7 +17,10 @@ passport.use(
         {
             clientID: "158320560302-uijgnhspve6ntibrgkcn5gg9juuuvvmk.apps.googleusercontent.com",
             clientSecret: "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",
-            callbackURL: "http://localhost:5000/oauth2callback",
+            callbackURL: process.env.NODE_ENV === 'production'
+            ? "https://articulacion.onrender.com//auth/google/callback"
+            : "http://localhost:3000/auth/google/callback",
+            passReqToCallback : true
         },
         async (accessToken, refreshToken, profile, done) => {
             console.log('Perfil de usuario:', profile);
