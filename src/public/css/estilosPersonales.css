@@ -7,3 +7,14 @@ body {
 main {
   flex: 1;
 }
+
+.secondary-navbar {
+  position: sticky;
+  top: 0; /* Por defecto al borde superior */
+  z-index: 1030;
+  transition: top 0.3s ease; /* Transición suave al cambiar la posición */
+}
+.scrolled .secondary-navbar {
+  position: fixed;
+  top: 0;
+}

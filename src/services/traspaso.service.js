@@ -33,12 +33,26 @@ const getPorEscuelaClave = async (clave) => {
             return [];
         }
 
-        return registros.filter(row => row.escuelaOrigen === clave);
+        // Filtrar registros por escuela origen
+        const filtrados = registros.filter(row => row.escuelaOrigen === clave);
+
+        // Agrupar por documento y quedarse con el último registro
+        const agrupados = filtrados.reduce((mapa, registro) => {
+            if (!mapa[registro.documento] || registro.rowNumber > mapa[registro.documento].rowNumber) {
+                mapa[registro.documento] = registro;
+            }
+            return mapa;
+        }, {});
+
+        // Convertir el mapa a un array
+        return Object.values(agrupados);
+
     } catch (error) {
         console.error("Error al procesar los datos:", error.message);
         return [];
     }
 };
+
 
 /**
  * Procesa un array de registros, agregando o modificando filas según la lógica definida.
@@ -52,7 +66,7 @@ const postArray = async (arrayJson, emailUsuario) => {
         throw new Error('No hay datos válidos para procesar.');
     }
 
-    const registrosProcesados = procesarRegistros(arrayJson, emailUsuario);
+    const registrosProcesados = procesarRegistros(arrayJson, emailUsuario)
 
     const resultados = [];
     const errores = [];
@@ -61,6 +75,7 @@ const postArray = async (arrayJson, emailUsuario) => {
         try {
             if (registro.traspasoRow == 0 || (registro.traspasoRow > 0 && registro.estado == 3)) {
                 // Caso 1: Agregar nueva fila
+                registro.estado = 1
                 const resultado = await traspasoSheet.post(registro);
                 resultados.push({ registro, accion: 'agregado', resultado });
             } else if (registro.traspasoRow > 0 && registro.estado < 3) {
@@ -98,8 +113,7 @@ const procesarRegistros = (arrayJson, emailUsuario) => {
     return arrayJson.map(registro => ({
         ...registro,
         fecha: fechaActual,
-        usuario: emailUsuario,
-        estado: registro.estado || 1, // Estado por defecto
+        usuario: emailUsuario
     }));
 };
 

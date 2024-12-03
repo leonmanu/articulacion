@@ -25,7 +25,6 @@ async function post(data) {
     try {
         const sheet = await getCredenciales('traspaso');
         const newRow = await sheet.addRow(data);
-        console.log("Nueva fila agregada:", newRow);
         return newRow;
     } catch (error) {
         console.error("Error al agregar una nueva fila:", error);
@@ -70,12 +69,6 @@ async function postArray(data) {
 }
 
 /**
- * Modifica una fila existente en la hoja.
- * @param {Number} rowNumber - Índice de la fila a modificar.
- * @param {Object} data - Datos actualizados.
- * @returns {Object} Fila modificada.
- */
-/**
  * Modifica una fila existente en la hoja utilizando directamente el índice `rowNumber`.
  * @param {Number} rowNumber - Índice de la fila a modificar.
  * @param {Object} data - Datos actualizados.
@@ -98,12 +91,9 @@ async function update(rowNumber, data) {
         // Actualizar las columnas con los nuevos valores
 
         try {
-            console.log("Encabezados de la hoja:", row._worksheet._headerValues);
-        
             // Recorremos los encabezados y actualizamos las columnas de la fila
             row._worksheet._headerValues.forEach((column, index) => {
                 if (data[column] !== undefined) { // Solo actualizamos si hay datos disponibles
-                    console.log(`Actualizando columna "${column}" (posición ${index}): "${row._rawData[index]}" a "${data[column]}"`);
                     row._rawData[index] = data[column]; // Actualización en _rawData
                 }
             });

@@ -10,12 +10,10 @@ const get =  async (req, res) => {
 }
 
 const postArray = async (req, res) => {
-    console.log("Entró al controller de traspaso");
-
     try {
         const arrayJson = req.body.datosModificados;
         const emailUsuario = req.session.user.email
-        await traspasoService.postArray(arrayJson, emailUsuario);
+        const resultados = await traspasoService.postArray(arrayJson, emailUsuario);
 
         // Respuesta exitosa con un mensaje
         res.status(201).send("Registro agregado correctamente");

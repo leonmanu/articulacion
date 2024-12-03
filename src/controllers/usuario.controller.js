@@ -30,7 +30,6 @@ const usuarioAnalisis = async (req, res) => {
         if (!resultado.admin) {
             if (tipo === 'Escuela') {
                 if(nivel === 'Primaria'){
-                    console.log("/estudiante/salientes/"+resultado.usuario.clave)
                     return res.redirect("/estudiante/salientes/" + resultado.usuario.clave)
                 } else {
                     return res.redirect("/estudiante/entrantes")
@@ -64,7 +63,6 @@ const post = (req, res) => {
         if(nivel === 'Secundaria'){
             return res.redirect("/estudiante/entrantes")
         } else {
-            console.log("/estudiante/salientes/"+obj.clave)
             return res.redirect("/estudiante/salientes/" + obj.clave)
         }
     } else {

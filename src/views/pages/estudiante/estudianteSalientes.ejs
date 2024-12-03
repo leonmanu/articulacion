@@ -7,17 +7,19 @@
     <%- include('../../partials/spinner') %> 
     <%- include('../../partials/navbar') %> 
     
-    <!-- Navber secundario -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <div class="navbar-brand"> <span class="fw-bolder" id="claveEscuela"><%= clave %></span> / Estudiantes salientes</div>
-            <div class="ml-auto">
-                <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
-                <button type="button" class="btn btn-warning d-none" id="btn-cancelar">Cancelar</button>
-                <button type="button" class="btn btn-success d-none" id="btn-guardar">Guardar</button>
-            </div>
+    <!-- Navbar secundario -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light secondary-navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <span class="fw-bolder" id="claveEscuela"><%= clave %></span> / Estudiantes salientes
         </div>
-    </nav>
+        <div class="ml-auto">
+            <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
+            <button type="button" class="btn btn-warning d-none" id="btn-cancelar">Cancelar</button>
+            <button type="button" class="btn btn-success d-none" id="btn-guardar">Guardar</button>
+        </div>
+    </div>
+</nav>
     
 
     <!-- Contenido Principal -->
@@ -34,8 +36,8 @@
                     <th>Curso</th>
                     <th>Escuela Destino</th>
                     <th>Estado</th>
-                    <th class="">RNT</th>
-                    <th class="">Estado</th>
+                    <th class="d-none">RNT</th>
+                    <th class="d-none">Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,19 +74,16 @@
                             </datalist>
                         </td>
                         <td class="text-center">
-                            <%= rowNumber %>
                             <% if (estadoTraspaso === '1') { %>
-                                <span style="font-style: italic; color: gray;">Pendiente</span>
+                                <span>Pendiente</span>
                             <% } else if (estadoTraspaso === '2') { %>
                                 <span style="color: green;">Confirmado</span>
                             <% } else if (estadoTraspaso === '3') { %>
                                 <span style="color: red;">Rechazado</span>
-                            <% } else { %>
-                                <span>Sin estado</span>
                             <% } %>
                         </td>
-                        <td class="text-center"><%= rowNumber %></td>
-                        <td class="text-center"><%= estadoTraspaso %></td>
+                        <td class="text-center d-none"><%= rowNumber %></td>
+                        <td class="text-center d-none"><%= estadoTraspaso %></td>
                     </tr>
                 <% }); %>
             </tbody>
