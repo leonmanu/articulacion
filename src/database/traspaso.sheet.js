@@ -1,87 +1,130 @@
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { JWT } = require('google-auth-library');
-require('dotenv').config();
+const { getCredenciales } = require('./credenciales.sheet');
 
-const googleId = '1u--FiGgUcA5Q7Zvd8Nw1TGR6wknUZUJsYxIJNroh4Jc';
-
-const serviceAccountAuth = new JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
-
+/**
+ * Obtener todas las filas de la hoja "traspaso".
+ */
 async function get() {
     try {
-        const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth)
-        
-        await documento.loadInfo()
-        const sheet = documento.sheetsByTitle['traspaso'] // Seleccionamos la primera hoja
-        const rows = await sheet.getRows() // Obtenemos todas las filas
-        
-        return rows
+        const sheet = await getCredenciales('traspaso');
+        return await sheet.getRows();
     } catch (error) {
-        console.error("Error al acceder al documento:", error)
+        console.error("Error al acceder al documento:", error);
+        throw error;
     }
 }
 
-// Agregar una nueva fila a la hoja
+/**
+ * Agregar una nueva fila a la hoja.
+ */
+/**
+ * Agrega una nueva fila a la hoja.
+ * @param {Object} data - Datos del registro.
+ * @returns {Object} Registro agregado.
+ */
 async function post(data) {
     try {
-        const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth);
-        
-        await documento.loadInfo();
-        const sheet = documento.sheetsByTitle['traspaso']; // Seleccionamos la hoja por título
-
-        // Agregar una nueva fila
+        const sheet = await getCredenciales('traspaso');
         const newRow = await sheet.addRow(data);
-
         console.log("Nueva fila agregada:", newRow);
         return newRow;
     } catch (error) {
         console.error("Error al agregar una nueva fila:", error);
+        throw error;
     }
 }
 
+/**
+ * Agregar múltiples filas a la hoja "traspaso".
+ * @param {Array} data - Array de objetos para agregar.
+ */
 async function postArray(data) {
-
-    const nerrores = 0
-
     try {
-        const documento = new GoogleSpreadsheet(googleId, serviceAccountAuth);
-        await documento.loadInfo();
-        const sheet = documento.sheetsByTitle['traspaso'];
-
-        for (const registro of data) {
-            try {
+        const sheet = await getCredenciales('traspaso');
+        const responses = await Promise.allSettled(
+            data.map(async registro => {
                 if (!registro || Object.keys(registro).length === 0) {
                     throw new Error("Registro vacío o inválido.");
                 }
-
-                // Guardar la fila en la hoja
                 await sheet.addRow(registro);
-            } catch (error) {
-                console.error("Error al procesar registro:")
-                return nerrores += 1
-            }
+            })
+        );
+
+        const errores = responses.filter(res => res.status === 'rejected');
+        if (errores.length) {
+            console.error(`${errores.length} registros fallaron.`);
         }
+
+        return {
+            value: errores.length === 0,
+            message: errores.length 
+                ? `${errores.length} registros fallaron.` 
+                : "Todos los registros se agregaron correctamente."
+        };
     } catch (error) {
         console.error("Error crítico al procesar registros:", error.message);
         return {
             value: false,
-            message: error.message
-        }
+            message: error.message,
+        };
     }
+}
 
-    // Retornar siempre un objeto con resultados y errores
-    return {
-        value: true,
-        message: "listo pero con " + nerrores + "errores."
+/**
+ * Modifica una fila existente en la hoja.
+ * @param {Number} rowNumber - Índice de la fila a modificar.
+ * @param {Object} data - Datos actualizados.
+ * @returns {Object} Fila modificada.
+ */
+/**
+ * Modifica una fila existente en la hoja utilizando directamente el índice `rowNumber`.
+ * @param {Number} rowNumber - Índice de la fila a modificar.
+ * @param {Object} data - Datos actualizados.
+ * @returns {Object} Fila modificada.
+ */
+async function update(rowNumber, data) {
+    try {
+        const sheet = await getCredenciales('traspaso');
+        const rows = await sheet.getRows();
+
+        if (rowNumber <= 0 || rowNumber > rows.length) {
+            throw new Error(`Índice de fila ${rowNumber} fuera de rango. Total filas: ${rows.length}`);
+        }
+
+        const row = rows[rowNumber - 2]; // Índice basado en 1
+        if (!row) {
+            throw new Error(`No se encontró la fila con índice ${rowNumber}`);
+        }
+
+        // Actualizar las columnas con los nuevos valores
+
+        try {
+            console.log("Encabezados de la hoja:", row._worksheet._headerValues);
+        
+            // Recorremos los encabezados y actualizamos las columnas de la fila
+            row._worksheet._headerValues.forEach((column, index) => {
+                if (data[column] !== undefined) { // Solo actualizamos si hay datos disponibles
+                    console.log(`Actualizando columna "${column}" (posición ${index}): "${row._rawData[index]}" a "${data[column]}"`);
+                    row._rawData[index] = data[column]; // Actualización en _rawData
+                }
+            });
+        
+            // Guardar cambios
+            await row.save();
+            console.log("Fila actualizada exitosamente.");
+        } catch (error) {
+            console.error("Error al actualizar la fila:", error.message);
+        }
+        
+
+
+        await row.save(); // Guarda los cambios en la hoja
+        console.log(`Fila ${rowNumber} modificada exitosamente.`);
+        return row;
+    } catch (error) {
+        console.error(`Error al modificar la fila ${rowNumber}:`, error.message);
+        throw error;
     }
 }
 
 
-
-
-
-
-module.exports = { get, post, postArray };
+module.exports = { get, post, postArray, update };

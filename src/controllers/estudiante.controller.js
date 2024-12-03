@@ -1,6 +1,8 @@
 const req = require('express/lib/request')
 const estudianteService = require('../services/estudiante.service')
 const escuelaService = require('../services/escuela.service')
+const traspasoaService = require('../services/traspaso.service')
+
 
 const get =  async (req, res) => {
     const registros = await estudianteService.get()
@@ -11,10 +13,12 @@ const get =  async (req, res) => {
 
 const getPorEscuelaClave =  async (req, res) => {
     const clave = req.params.claveEscuela
+    const claveArticula = req.params.claveArticula
     const registros = await estudianteService.getPorEscuelaClave(clave)
     const claveEscuelas = await escuelaService.getColumna('clave')
+    const traspasos = await traspasoaService.getPorEscuelaClave(clave)
     
-    res.render("pages/estudiante/estudianteSalientes", {estudiantes: registros, claveEscuelas, user: req.session.user})
+    res.render("pages/estudiante/estudianteSalientes", {estudiantes: registros, clave, claveEscuelas, claveArticula, traspasos, user: req.session.user})
 }
 
 const acciones =  async (req, res) => {

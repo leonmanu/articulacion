@@ -1,62 +1,107 @@
-const traspasoSheet = require('../database/traspaso.sheet')
-const utilidadesService = require('./utilidades.service')
+const traspasoSheet = require('../database/traspaso.sheet');
+const utilidadesService = require('./utilidades.service');
 
+/**
+ * Obtener todos los registros de la hoja "traspaso".
+ */
 const get = async () => {
     try {
         const registros = await traspasoSheet.get();
 
         if (!registros.length) {
-            console.warn("No se encontraron registros.")
-            return []
+            console.warn("No se encontraron registros.");
+            return [];
         }
-        
-        const registrosJson = utilidadesService.convertToJson(registros)
-        return registrosJson
 
+        return utilidadesService.convertToJson(registros);
     } catch (error) {
-        console.error("Error al procesar los datos:", error.message)
-        return []
+        console.error("Error al procesar los datos:", error.message);
+        return [];
     }
-}
+};
 
+/**
+ * Obtener registros filtrados por clave de escuela.
+ * @param {string} clave - Clave de la escuela a filtrar.
+ */
+const getPorEscuelaClave = async (clave) => {
+    try {
+        const registros = await get();
+
+        if (!registros.length) {
+            console.warn("No se encontraron registros.");
+            return [];
+        }
+
+        return registros.filter(row => row.escuelaOrigen === clave);
+    } catch (error) {
+        console.error("Error al procesar los datos:", error.message);
+        return [];
+    }
+};
+
+/**
+ * Procesa un array de registros, agregando o modificando filas según la lógica definida.
+ * @param {Array} arrayJson - Registros a procesar.
+ * @param {String} emailUsuario - Correo del usuario que realiza la acción.
+ */
 const postArray = async (arrayJson, emailUsuario) => {
-    console.log("Servicio POST llamado con datos:", arrayJson);
+    //console.log("Servicio POST llamado con datos:", arrayJson);
 
     if (!arrayJson || !Array.isArray(arrayJson) || arrayJson.length === 0) {
         throw new Error('No hay datos válidos para procesar.');
     }
 
-    const fechaActual = new Date().toISOString();
+    const registrosProcesados = procesarRegistros(arrayJson, emailUsuario);
 
-    // Modificar cada objeto en el array agregando las propiedades 'fecha' y 'usuario'
-    const arrayModificado = arrayJson.map(registro => {
-        // Aquí estamos agregando las propiedades 'fecha' y 'usuario' a cada objeto
-        return {
-            ...registro, // Copiamos las propiedades existentes del objeto
-            fecha: fechaActual,  // Agregamos la propiedad 'fecha' con la fecha actual
-            usuario: emailUsuario, // Agregamos la propiedad 'usuario' con el correo del usuario
-            estado: 1
+    const resultados = [];
+    const errores = [];
+
+    for (const registro of registrosProcesados) {
+        try {
+            if (registro.traspasoRow == 0 || (registro.traspasoRow > 0 && registro.estado == 3)) {
+                // Caso 1: Agregar nueva fila
+                const resultado = await traspasoSheet.post(registro);
+                resultados.push({ registro, accion: 'agregado', resultado });
+            } else if (registro.traspasoRow > 0 && registro.estado < 3) {
+                // Caso 2: Modificar fila existente
+                const resultado = await traspasoSheet.update(registro.traspasoRow, registro);
+                resultados.push({ registro, accion: 'modificado', resultado });
+            }
+        } catch (error) {
+            console.error("Error al procesar registro:", registro, error.message);
+            errores.push({ registro, error: error.message });
         }
-    })
-
-    try {
-        const resultado = await traspasoSheet.postArray(arrayModificado);
-
-        if (!resultado.value) {
-            console.warn("Errores detectados:", errores);
-            throw new Error(resultado.message);
-        }
-
-        console.log("Todos los registros se guardaron correctamente.");
-    } catch (error) {
-        console.error("Error en el servicio POST:", error.message);
-        throw error;
     }
-}
+
+    console.log(
+        `${resultados.length} registros procesados correctamente, ${errores.length} errores.`
+    );
+
+    if (errores.length > 0) {
+        throw new Error(
+            `Se completó con errores: ${errores.length} registros fallaron.`
+        );
+    }
+
+    return resultados;
+};
+
+/**
+ * Agrega propiedades adicionales a los registros.
+ * @param {Array} arrayJson - Registros originales.
+ * @param {String} emailUsuario - Usuario que realiza la acción.
+ * @returns {Array} Registros modificados.
+ */
+const procesarRegistros = (arrayJson, emailUsuario) => {
+    const fechaActual = new Date().toISOString();
+    return arrayJson.map(registro => ({
+        ...registro,
+        fecha: fechaActual,
+        usuario: emailUsuario,
+        estado: registro.estado || 1, // Estado por defecto
+    }));
+};
 
 
-
-
-module.exports = {
-    get, postArray
-}
+module.exports = { get, postArray, getPorEscuelaClave };

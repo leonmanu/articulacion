@@ -10,7 +10,7 @@
     <!-- Navber secundario -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <div class="navbar-brand">Estudiantes</div>
+            <div class="navbar-brand"> <span class="fw-bolder" id="claveEscuela"><%= clave %></span> / Estudiantes salientes</div>
             <div class="ml-auto">
                 <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
                 <button type="button" class="btn btn-warning d-none" id="btn-cancelar">Cancelar</button>
@@ -33,10 +33,20 @@
                     <th>Documento</th>
                     <th>Curso</th>
                     <th>Escuela Destino</th>
+                    <th>Estado</th>
+                    <th class="">RNT</th>
+                    <th class="">Estado</th>
                 </tr>
             </thead>
             <tbody>
                 <% estudiantes.forEach(estudiante => { %>
+                    <% 
+                        // Buscar el traspaso correspondiente al estudiante
+                        const traspaso = traspasos.find(t => t.documento === estudiante.documento);
+                        const escuelaDestino = traspaso ? traspaso.escuelaDestino : ''; 
+                        const estadoTraspaso = traspaso ? traspaso.estado : 0; 
+                        const rowNumber = traspaso ? traspaso.rowNumber : 0; 
+                    %>
                     <tr>
                         <td class="change d-none">false</td>
                         <td class="text-center d-none"><%= estudiante.rowNumber %></td>
@@ -46,16 +56,39 @@
                         <td class="text-center"><%= estudiante.documento || 'Sin documento' %></td>
                         <td class="text-center"><%= estudiante.claveCurso %></td>
                         <td>
-                            <input name="escuelaDestino" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar..." disabled>
-                            <datalist id="datalistOptions">
+                            <input 
+                                name="escuelaDestino" 
+                                class="form-control" 
+                                list="datalistOptions-<%= estudiante.documento %>" 
+                                id="exampleDataList" 
+                                placeholder="Buscar..." 
+                                value="<%= escuelaDestino %>" 
+                                disabled
+                            >
+                            <datalist id="datalistOptions-<%= estudiante.documento %>">
                                 <% claveEscuelas.forEach(escuela => { %>
                                     <option value="<%= escuela %>"><%= escuela %></option>
                                 <% }); %>
                             </datalist>
                         </td>
+                        <td class="text-center">
+                            <%= rowNumber %>
+                            <% if (estadoTraspaso === '1') { %>
+                                <span style="font-style: italic; color: gray;">Pendiente</span>
+                            <% } else if (estadoTraspaso === '2') { %>
+                                <span style="color: green;">Confirmado</span>
+                            <% } else if (estadoTraspaso === '3') { %>
+                                <span style="color: red;">Rechazado</span>
+                            <% } else { %>
+                                <span>Sin estado</span>
+                            <% } %>
+                        </td>
+                        <td class="text-center"><%= rowNumber %></td>
+                        <td class="text-center"><%= estadoTraspaso %></td>
                     </tr>
                 <% }); %>
             </tbody>
+            
         </table>
     </div>
 <%- include('../../partials/footer') %> 

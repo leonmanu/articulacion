@@ -31,7 +31,7 @@ const usuarioAnalisis = async (req, res) => {
             if (tipo === 'Escuela') {
                 if(nivel === 'Primaria'){
                     console.log("/estudiante/salientes/"+resultado.usuario.clave)
-                    return res.redirect("/estudiante/salientes/"+resultado.usuario.clave)
+                    return res.redirect("/estudiante/salientes/" + resultado.usuario.clave)
                 } else {
                     return res.redirect("/estudiante/entrantes")
                 }
@@ -65,7 +65,7 @@ const post = (req, res) => {
             return res.redirect("/estudiante/entrantes")
         } else {
             console.log("/estudiante/salientes/"+obj.clave)
-            return res.redirect("/estudiante/salientes/"+obj.clave)
+            return res.redirect("/estudiante/salientes/" + obj.clave)
         }
     } else {
         req.session.message = "Usuario admin en espera de aprobación."

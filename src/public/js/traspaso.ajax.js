@@ -1,10 +1,11 @@
 $(window).on("load", function () {
     $("table > tbody > tr input").change(function (event) {
-        event.preventDefault();
-        var tbl_row = $(this).closest('tr');
-        tbl_row.addClass('fst-italic fst-boldt');
-        tbl_row.find(".change").html('true');
-        actualizarEstadoBotonGuardar();
+        event.preventDefault()
+        var tbl_row = $(this).closest('tr')
+        tbl_row.addClass('fst-italic')
+        tbl_row.find("td:nth-child(5)").addClass('fw-bolder')
+        tbl_row.find(".change").html('true')
+        actualizarEstadoBotonGuardar()
     });
 
     $('#btn-editar').click(function (event) {
@@ -32,7 +33,9 @@ $(window).on("load", function () {
                 let fila = {
                     escuelaOrigen: tbl_row.find("td:nth-child(4)").text().trim(),
                     documento: tbl_row.find("td:nth-child(6)").text().trim(),
-                    escuelaDestino: tbl_row.find("td:nth-child(8) input").val().trim() || ""
+                    escuelaDestino: tbl_row.find("td:nth-child(8) input").val().trim() || "",
+                    traspasoRow: tbl_row.find("td:nth-child(10)").text().trim(),
+                    estado: tbl_row.find("td:nth-child(11)").text().trim(),
                 };
                 datosModificados.push(fila);
             }
@@ -57,6 +60,7 @@ $(window).on("load", function () {
                     var tbl_row = $(this);
                     if (tbl_row.find(".change").html() === 'true') {
                         tbl_row.removeClass('fst-italic');
+                        tbl_row.find("td:nth-child(5)").removeClass('fw-bolder');
                         tbl_row.find(".change").html('false');
                         tbl_row.find(".estudiante").removeClass('text-success');
                     }

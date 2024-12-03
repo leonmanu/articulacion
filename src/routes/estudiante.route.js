@@ -13,6 +13,7 @@ router
     .get('/', get)
     .get('/acciones', acciones)
     //.get('/salientes', salientes)
+    //.get('/salientes/:claveEscuela?-:claveArticula?', getPorEscuelaClave)
     .get('/salientes/:claveEscuela?', getPorEscuelaClave)
     .get('/entrantes', entrantes)
 

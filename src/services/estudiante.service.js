@@ -30,7 +30,7 @@ const getPorEscuelaClave = async (clave) => {
         }
 
         const filtrados = await registros.filter(row => row.claveEscuela == clave)
-        console.log("estudiante.service -> filtrados: ", filtrados)
+        //console.log("estudiante.service -> filtrados: ", filtrados)
         
         //const registrosJson = utilidadesService.convertToJson(filtrados)
         return filtrados
