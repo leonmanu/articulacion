@@ -11,6 +11,13 @@ const get =  async (req, res) => {
     res.render("pages/estudiante/estudianteList", {estudiantes: registros, claveEscuelas, user: req.session.user})
 }
 
+const getTodos =  async (req, res) => {
+    const registros = await estudianteService.get()
+    const traspasos = await traspasoaService.get()
+    
+    res.render("pages/estudiante/estudianteTodos", {estudiantes: registros, traspasos, user: req.session.user})
+}
+
 const getPorEscuelaClave =  async (req, res) => {
     const clave = req.params.claveEscuela
     const claveArticula = req.params.claveArticula
@@ -58,5 +65,6 @@ module.exports = {
     salientes,
     entrantes,
     getPorEscuelaClave,
-    getEntrantesPorEscuelaClave
+    getEntrantesPorEscuelaClave,
+    getTodos
 }

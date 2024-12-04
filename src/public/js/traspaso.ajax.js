@@ -93,7 +93,7 @@ $(window).on("load", function () {
                     traspasoRow: tbl_row.find("td:nth-child(10)").text().trim(),
                     estado: tbl_row.find("td:nth-child(9) select").val().trim() || "",
                     
-                }
+                }   
                 datosModificados.push(fila);
             }
         })
