@@ -23,8 +23,23 @@ const postArray = async (req, res) => {
     }
 }
 
+const postArrayEntrantes = async (req, res) => {
+    try {
+        const arrayJson = req.body.datosModificados;
+        const emailUsuario = req.session.user.email
+        const resultados = await traspasoService.postArrayEntrantes(arrayJson, emailUsuario);
+
+        // Respuesta exitosa con un mensaje
+        res.status(201).send("Registro agregado correctamente");
+    } catch (error) {
+        console.error("Error en el controller POST:", error.message);
+        res.status(500).send("Error al agregar el registro.");
+    }
+}
+
 
 module.exports = {
     get,
-    postArray
+    postArray,
+    postArrayEntrantes
 }

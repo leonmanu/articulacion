@@ -106,7 +106,7 @@ $(window).on("load", function () {
         }
 
         $.ajax({
-            url: '/traspaso/postArray',
+            url: '/traspaso/postArrayEntrantes',
             contentType: 'application/json',
             method: 'POST',
             data: JSON.stringify({ datosModificados }),

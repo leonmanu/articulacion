@@ -131,7 +131,50 @@ const postArray = async (arrayJson, emailUsuario) => {
     }
 
     return resultados;
-};
+}
+
+
+const postArrayEntrantes = async (arrayJson, emailUsuario) => {
+    //console.log("Servicio POST llamado con datos:", arrayJson);
+
+    if (!arrayJson || !Array.isArray(arrayJson) || arrayJson.length === 0) {
+        throw new Error('No hay datos válidos para procesar.');
+    }
+
+    const registrosProcesados = procesarRegistros(arrayJson, emailUsuario)
+
+    const resultados = [];
+    const errores = [];
+
+    for (const registro of registrosProcesados) {
+        try {
+            if (registro.traspasoRow == 0 || (registro.traspasoRow > 0 && registro.estado == 3)) {
+                // Caso 1: Agregar nueva fila
+                const resultado = await traspasoSheet.post(registro);
+                resultados.push({ registro, accion: 'agregado', resultado });
+            } else if (registro.traspasoRow > 0 && registro.estado < 3) {
+                // Caso 2: Modificar fila existente
+                const resultado = await traspasoSheet.update(registro.traspasoRow, registro);
+                resultados.push({ registro, accion: 'modificado', resultado });
+            }
+        } catch (error) {
+            console.error("Error al procesar registro:", registro, error.message);
+            errores.push({ registro, error: error.message });
+        }
+    }
+
+    console.log(
+        `${resultados.length} registros procesados correctamente, ${errores.length} errores.`
+    );
+
+    if (errores.length > 0) {
+        throw new Error(
+            `Se completó con errores: ${errores.length} registros fallaron.`
+        );
+    }
+
+    return resultados;
+}
 
 /**
  * Agrega propiedades adicionales a los registros.
@@ -149,4 +192,10 @@ const procesarRegistros = (arrayJson, emailUsuario) => {
 };
 
 
-module.exports = { get, postArray, getPorEscuelaClave,getPorEscuelaDestinoClave };
+module.exports = {
+    get,
+    postArray, 
+    getPorEscuelaClave,
+    getPorEscuelaDestinoClave, 
+    postArrayEntrantes 
+}
