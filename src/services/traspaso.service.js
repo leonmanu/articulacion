@@ -24,6 +24,37 @@ const get = async () => {
  * Obtener registros filtrados por clave de escuela.
  * @param {string} clave - Clave de la escuela a filtrar.
  */
+
+
+const getPorEscuelaDestinoClave = async (clave) => {
+    try {
+        const registros = await get();
+
+        if (!registros.length) {
+            console.warn("No se encontraron registros.");
+            return [];
+        }
+
+        // Filtrar registros por escuela origen
+        const filtrados = registros.filter(row => row.escuelaDestino === clave);
+
+        // Agrupar por documento y quedarse con el último registro
+        const agrupados = filtrados.reduce((mapa, registro) => {
+            if (!mapa[registro.documento] || registro.rowNumber > mapa[registro.documento].rowNumber) {
+                mapa[registro.documento] = registro;
+            }
+            return mapa;
+        }, {});
+
+        // Convertir el mapa a un array
+        return Object.values(agrupados);
+
+    } catch (error) {
+        console.error("Error al procesar los datos:", error.message);
+        return [];
+    }
+};
+
 const getPorEscuelaClave = async (clave) => {
     try {
         const registros = await get();
@@ -118,4 +149,4 @@ const procesarRegistros = (arrayJson, emailUsuario) => {
 };
 
 
-module.exports = { get, postArray, getPorEscuelaClave };
+module.exports = { get, postArray, getPorEscuelaClave,getPorEscuelaDestinoClave };

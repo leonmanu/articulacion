@@ -60,7 +60,7 @@
                         <td>
                             <input 
                                 name="escuelaDestino" 
-                                class="form-control" 
+                                class="form-select slcChange" 
                                 list="datalistOptions-<%= estudiante.documento %>" 
                                 id="exampleDataList" 
                                 placeholder="Buscar..." 
@@ -75,11 +75,11 @@
                         </td>
                         <td class="text-center">
                             <% if (estadoTraspaso === '1') { %>
-                                <span>Pendiente</span>
+                                <span>pendiente</span>
                             <% } else if (estadoTraspaso === '2') { %>
-                                <span style="color: green;">Confirmado</span>
+                                <span style="color: green;">confirmado</span>
                             <% } else if (estadoTraspaso === '3') { %>
-                                <span style="color: red;">Rechazado</span>
+                                <span style="color: red;">rechazado</span>
                             <% } %>
                         </td>
                         <td class="text-center d-none"><%= rowNumber %></td>

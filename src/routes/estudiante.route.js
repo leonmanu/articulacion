@@ -6,7 +6,8 @@ const {
     acciones,
     salientes,
     entrantes,
-    getPorEscuelaClave
+    getPorEscuelaClave,
+    getEntrantesPorEscuelaClave
 } = require('../controllers/estudiante.controller')
 
 router
@@ -15,6 +16,6 @@ router
     //.get('/salientes', salientes)
     //.get('/salientes/:claveEscuela?-:claveArticula?', getPorEscuelaClave)
     .get('/salientes/:claveEscuela?', getPorEscuelaClave)
-    .get('/entrantes', entrantes)
+    .get('/entrantes/:claveEscuela?', getEntrantesPorEscuelaClave)
 
 module.exports = router

@@ -32,7 +32,7 @@ const usuarioAnalisis = async (req, res) => {
                 if(nivel === 'Primaria'){
                     return res.redirect("/estudiante/salientes/" + resultado.usuario.clave)
                 } else {
-                    return res.redirect("/estudiante/entrantes")
+                    return res.redirect("/estudiante/entrantes/" + resultado.usuario.clave)
                 }
             } else {
                 req.session.message = resultado.message; // Guardar el mensaje en la sesión para mostrarlo

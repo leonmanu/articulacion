@@ -7,14 +7,20 @@
     <%- include('../../partials/spinner') %> 
     <%- include('../../partials/navbar') %> 
     
-    <!-- Navber secundario -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <div class="navbar-brand" href="#">Estudiantes</div>
-            <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
-            <button type="button" class="btn btn-success d-none" id="btn-guardar">Guardar</button>
+    <!-- Navbar secundario -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light secondary-navbar">
+    <div class="container">
+        <div class="navbar-brand">
+            <span class="fw-bolder" id="claveEscuela"><%= clave %></span> / Estudiantes entrantes
         </div>
-    </nav>
+        <div class="ml-auto">
+            <button type="button" class="btn btn-info" id="btn-editar">Editar</button>
+            <button type="button" class="btn btn-warning d-none" id="btn-cancelar">Cancelar</button>
+            <button type="button" class="btn btn-success d-none" id="btn-guardar-entrantes">Guardar</button>
+        </div>
+    </div>
+</nav>
+    
 
     <!-- Contenido Principal -->
     <div class="container mt-4">
@@ -23,39 +29,53 @@
                 <tr>
                     <th class="d-none" > Change </th>
                     <th class="d-none" >RN</th>
-                    <th>ID</th>
-                    <th>Escuela</th>
-                    <th>Curso</th>
-                    <th>Fecha Inscripción</th>
-                    <th>Estado Inscripción</th>
+                    <th class="d-none">ID</th>
+                    <th class="">Escuela</th>
                     <th>Estudiante</th>
                     <th>Documento</th>
-                    <th>Escuela Destino</th>
+                    <th>Curso</th>
+                    <th>Escuela Origen</th>
+                    <th>Estado</th>
+                    <th class="d-none">RNT</th>
+                    <th class="d-none">Estado</th>
                 </tr>
             </thead>
             <tbody>
-                <% estudiantes.forEach(estudiante => { %>
+                <% traspasos.forEach(traspaso => { %>
+                    <% 
+                        // Buscar el estudiante correspondiente al documento del traspaso
+                        const estudiante = estudiantes.find(e => e.documento === traspaso.documento);
+                        const nombreEstudiante = estudiante ? estudiante.estudiante : 'Sin nombre';
+                        const claveCurso = estudiante ? estudiante.claveCurso : 'Sin curso';
+                    %>
                     <tr>
                         <td class="change d-none">false</td>
-                        <td class="text-center d-none"><%= estudiante.rowNumber %></td>
-                        <td class="text-center"><%= estudiante.id %></td>
-                        <td class="text-center"><%= estudiante.claveEscuela %></td>
-                        <td class="text-center"><%= estudiante.claveCurso %></td>
-                        <td class="text-center"><%= estudiante['Fecha inscripción'] %></td>
-                        <td class="text-center"><%= estudiante['Estado inscripción'] %></td>
-                        <td class="text-center estudiante"><%= estudiante.estudiante %></td>
-                        <td class="text-center"><%= estudiante.documento %></td>
-                        <td>
-                            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar..." disabled>
-                            <datalist id="datalistOptions">
-                                <% claveEscuelas.forEach(escuela => { %>
-                                    <option value="<%= escuela %>"><%= escuela %></option>
-                                <% }); %>
-                            </datalist>
+                        <td class="text-center d-none"><%= traspaso.rowNumber %></td>
+                        <td class="text-center d-none"><%= traspaso.id %></td>
+                        <td class="text-center"><%= traspaso.escuelaDestino %></td>
+                        <td class=""><%= nombreEstudiante %></td>
+                        <td class="text-center"><%= traspaso.documento %></td>
+                        <td class="text-center"><%= claveCurso %></td>
+                        <td class="text-center">
+                            <%= traspaso.escuelaOrigen %>
                         </td>
+                        <td class="text-center">
+                            <select class="form-select slcChange" disabled>
+                                <% estadoTraspasos.forEach(estado => { %>
+                                    <option value="<%= estado.clave %>" 
+                                        <%= traspaso.estado === estado.clave ? 'selected' : '' %>>
+                                        <%= estado.nombre %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </td>
+                        <td class="text-center d-none"><%= traspaso.rowNumber %></td>
+                        <td class="text-center d-none"><%= traspaso.estado %></td>
                     </tr>
                 <% }); %>
             </tbody>
+            
+            
         </table>
     </div>
 <%- include('../../partials/footer') %> 
