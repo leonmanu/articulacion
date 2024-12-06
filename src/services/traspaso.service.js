@@ -141,7 +141,7 @@ const postArrayEntrantes = async (arrayJson, emailUsuario) => {
         throw new Error('No hay datos válidos para procesar.');
     }
 
-    const registrosProcesados = procesarRegistros(arrayJson, emailUsuario)
+    const registrosProcesados = procesarRegistrosEntrantes(arrayJson, emailUsuario)
 
     const resultados = [];
     const errores = [];
@@ -190,6 +190,16 @@ const procesarRegistros = (arrayJson, emailUsuario) => {
         usuario: emailUsuario
     }));
 };
+
+const procesarRegistrosEntrantes = (arrayJson, emailUsuario) => {
+    const fechaActual = new Date().toISOString();
+    return arrayJson.map(registro => ({
+        ...registro,
+        fecha: fechaActual,
+        usuarioFin: emailUsuario
+    }));
+};
+
 
 
 module.exports = {

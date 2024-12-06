@@ -22,23 +22,53 @@
             <thead class="table-primary text-center">
                 <tr>
                     <th>
-                        Estudiante <br>
+                        <a class="link-dark" href="#">
+                            Estudiante
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                            <i class="bi bi-sort-up d-none"></i>
+                        </a> 
+                        <br>
                         <input type="search" class="form-control" id="inpEstudiante" type="text" placeholder="Search..">
                     </th>
                     <th>
-                        Documento<br>
+                        <a class="link-dark" href="#">
+                            Documento
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                            <i class="bi bi-sort-up d-none"></i>
+                        </a> 
+                        <br>
                         <input id="inpDocumento" placeholder="Search.." type="search" class="form-control">
                     </th>
                     <th>
-                        Escuela Origen <br>
+                        <a class="link-dark" href="#">
+                            Escuela Origen
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                            <i class="bi bi-sort-up d-none"></i>
+                        </a> 
+                         <br>
                         <input id="inpEscuelaOrigen" placeholder="Search.." type="search" class="form-control">
                     </th>
                     <th>
-                        Curso <br>
+                        <a class="link-dark" href="#">
+                            Curso
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                            <i class="bi bi-sort-up d-none"></i>
+                        </a> 
+                         <br>
                         <input id="inpCurso" placeholder="Search.." type="search" class="form-control">
                     </th>
                     <th>
-                        Escuela Destino <br>
+                        <a class="link-dark" href="#">
+                            Escuela Destino
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                            <i class="bi bi-sort-up d-none"></i>
+                        </a> 
+                        <br>
                         <input id="inpEscuelaDestino" placeholder="Search.." type="search" class="form-control">
                     </th>
                     <th>
@@ -132,37 +162,68 @@ $(document).ready(function () {
     }
 
     // Ordenar las filas en función de la columna seleccionada
-    function sortTable(columnIndex) {
-        var rows = $("#myTable tr").get();
-        var direction = sortDirection[columnIndex] || 'asc'; // Default to ascending
+function sortTable(columnIndex) {
+    var rows = $("#myTable tr").get();
+    var direction = sortDirection[columnIndex] || 'asc'; // Default to ascending
 
-        rows.sort(function (a, b) {
-            var cellA = $(a).find("td").eq(columnIndex).text().toLowerCase();
-            var cellB = $(b).find("td").eq(columnIndex).text().toLowerCase();
+    rows.sort(function (a, b) {
+        var cellA = $(a).find("td").eq(columnIndex).text().toLowerCase();
+        var cellB = $(b).find("td").eq(columnIndex).text().toLowerCase();
 
-            if (cellA < cellB) {
-                return direction === 'asc' ? -1 : 1;
-            }
-            if (cellA > cellB) {
-                return direction === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-
-        // Re-append las filas en el orden correcto
-        $.each(rows, function (index, row) {
-            $("#myTable").append(row);
-        });
-
-        // Cambiar la dirección para la próxima vez que se haga clic
-        sortDirection[columnIndex] = direction === 'asc' ? 'desc' : 'asc';
-    }
-
-    // Asignar eventos de click para ordenar por columna
-    $("thead th").on("click", function () {
-        var columnIndex = $(this).index();
-        sortTable(columnIndex);
+        if (cellA < cellB) {
+            return direction === 'asc' ? -1 : 1;
+        }
+        if (cellA > cellB) {
+            return direction === 'asc' ? 1 : -1;
+        }
+        return 0;
     });
+
+    // Re-append las filas en el orden correcto
+    $.each(rows, function (index, row) {
+        $("#myTable").append(row);
+    });
+
+    // Cambiar la dirección para la próxima vez que se haga clic
+    sortDirection[columnIndex] = direction === 'asc' ? 'desc' : 'asc';
+
+    // Actualizar los íconos de la columna
+    updateIcons(columnIndex, direction);
+}
+
+// Actualizar los íconos de orden en el encabezado
+function updateIcons(columnIndex, direction) {
+    // Restablecer todos los íconos
+    $("thead th i").addClass("d-none");
+    $("thead th i.bi-arrow-down-up").removeClass("d-none");
+
+    // Seleccionar los íconos de la columna actual
+    var header = $("thead th").eq(columnIndex);
+    var arrowIcon = header.find("i.bi-arrow-down-up");
+    var sortDownIcon = header.find("i.bi-sort-down");
+    var sortUpIcon = header.find("i.bi-sort-up");
+
+    // Mostrar el ícono correcto según la dirección
+    arrowIcon.addClass("d-none");
+    if (direction === 'asc') {
+        sortUpIcon.addClass("d-none");
+        sortDownIcon.removeClass("d-none");
+    } else {
+        sortDownIcon.addClass("d-none");
+        sortUpIcon.removeClass("d-none");
+    }
+}
+
+// Asignar eventos de clic a los encabezados
+$("thead th a").on("click", function (e) {
+    e.preventDefault();
+
+    // Determinar el índice de la columna en función del clic
+    var columnIndex = $(this).closest("th").index();
+
+    // Ordenar la tabla por la columna seleccionada
+    sortTable(columnIndex);
+});
 
     // Llamar a populateSelect al cargar la página
     populateSelect();
